@@ -5,9 +5,6 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 import webbrowser
-from googletrans import Translator
-from csv import DictReader
-from random import randint, choice
 
 from PIL import Image, ImageTk
 
