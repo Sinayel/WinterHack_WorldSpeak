@@ -77,75 +77,6 @@ class LoginApp(tk.Frame):
     def open_reportForm(self):
         webbrowser.open("https://forms.gle/mqzgpgpWHABrVEjo7")
 
-    def getBaseLanguage(self, entry):
-        self.getBaseLanguage.var = entry
-        self.exercisesLabel[
-            "text"] = "Which language do you want to practice?\nquelle langue voulez-vous pratiquer?\nque idioma quieres practicar\nChe lingua vuoi praticare?\n(en, fr, es, it)"
-        self.getPracticeLanguageButton.lift()
-        self.Answerbox.delete(0, "end")
-
-    def getPracticeLanguage(self, entry):
-        self.getPracticeLanguage.var = entry
-        self.exercisesLabel[
-            "text"] = "Select dificulty\nsélectionner la difficulté\nSeleccione dificultad\nselezionare la difficoltà\n(easy, normal, hard)"
-        self.getDifficultyButton.lift()
-        self.Answerbox.delete(0, "end")
-
-    def getDifficulty(self, entry):
-        self.getDifficulty.var = entry
-        self.Answerbox.delete(0, "end")
-
-        if self.getDifficulty.var == "easy":
-            self.getDifficulty.xpval = 5
-        if self.getDifficulty.var == "normal":
-            self.getDifficulty.xpval = 10
-        if self.getDifficulty.var == "hard":
-            self.getDifficulty.xpval = 20
-        self.submitButton.lift()
-        self.questionButton["state"] = "normal"
-
-    def getQuestion(self):
-        translator = Translator()
-
-        with open("phrases.csv") as f:
-            eyes = DictReader(f)
-            matches = []
-
-            for row in eyes:
-                if row["difficulty"] == self.getDifficulty.var:
-                    matches.append(row)
-
-        for i in range(4):
-            exercise = choice(matches)
-            matches.remove(exercise)
-            type_ = randint(0, 1)
-            if type_ == 0:
-                question = translator.translate(exercise["question"], dest=self.getPracticeLanguage.var).text
-                self.getQuestion.answer = translator.translate(exercise["question"], dest=self.getBaseLanguage.var).text
-            else:
-                question = translator.translate(exercise["question"], dest=self.getBaseLanguage.var).text
-                self.getQuestion.answer = translator.translate(exercise["question"],
-                                                               dest=self.getPracticeLanguage.var).text
-        self.exercisesLabel["text"] = question
-
-    def submitAnswer(self, entry):
-        global exp
-        if entry == self.getQuestion.answer:
-            exp += self.getDifficulty.xpval
-            self.feedbackLabel[
-                "text"] = f"Correct! {choice(['Nice work.', 'Excellent!', 'Good job!'])}" \
-                          f" Gained {self.getDifficulty.xpval} XP, for a total of {exp} XP! You'll fluently speak in no time!"
-            global expText
-            expText = tk.Label(self.recFrame, bg="white", text="Total XP: " + str(exp), font=("Cambria", 16))
-            expText.place(relx=0.1, rely=0.05, relwidth=0.2, relheight=0.2)
-
-        if entry != self.getQuestion.answer:
-            self.feedbackLabel[
-                "text"] = f"Incorrect! Don't worry, you still got this! The correct answer was {self.getQuestion.answer}"
-        self.Answerbox.delete(0, "end")
-
-    firstQuestion = True
-
     def login_sucess(self):
         self.root = tk.Toplevel(window)
 
@@ -517,50 +448,7 @@ class LoginApp(tk.Frame):
         self.e_password.bind('<FocusOut>', self.on_leave_password)
         self.e_password.insert(0, "Password")
         self.e_password.place(x=14, y=90)
-
-        self.headFrame = tk.Frame(self.exercisePage, bg="white", relief="ridge", borderwidth=2)
-        self.headFrame.place(relx=0.05, rely=0.05, relwidth=0.9, relheight=0.2)
-        self.headText = tk.Label(self.headFrame, bg="white", text="Exercise Away!", font=("Cambria bold", 36),
-                                 anchor="w",
-                                 padx=20)
-        self.headText.place(relx=0.02, rely=0.05, relwidth=0.96, relheight=0.9)
-
-        self.functionFrame = tk.Frame(self.exercisePage, bg="white", relief="ridge", borderwidth=2)
-        self.functionFrame.place(relx=0.05, rely=0.3, relwidth=0.9, relheight=0.6)
-
-        self.exercisesLabel = tk.Label(self.functionFrame, font=("Cambria bold", 16), bg="white", borderwidth=0,
-                                       text="What language do you speak?\nQuelle langue parlez-vous?\nQué idioma hablas?\nChe lingua parli?\n(en, fr, es, it)",
-                                       anchor="nw", justify="left")
-        self.exercisesLabel.place(relx=0.05, rely=0.1, relheight=0.4, relwidth=0.9)
-
-        self.feedbackLabel = tk.Label(self.functionFrame, font=("Cambria", 12), bg="white", fg="red", borderwidth=0,
-                                      text="your feedback will appear here!", anchor="nw", justify="left")
-        self.feedbackLabel.place(relx=0.05, rely=0.55, relheight=0.2, relwidth=0.9)
-
-        self.Answerbox = tk.Entry(self.functionFrame, font=("Cambria", 16))
-        self.Answerbox.place(relx=0.05, rely=0.7, relheight=0.2, relwidth=0.7)
-
-        self.questionButton = tk.Button(self.functionFrame, text="NEXT", font=("Cambria bold", 16), bg="#ebefff",
-                                        command=lambda: self.getQuestion(), state="disabled")
-        self.questionButton.place(relx=0.8, rely=0.4, relheight=0.2, relwidth=0.15)
-
-        self.submitButton = tk.Button(self.functionFrame, text="OK", font=("Cambria bold", 16), bg="#ebefff",
-                                      command=lambda: self.submitAnswer(self.Answerbox.get()))
-        self.submitButton.place(relx=0.8, rely=0.7, relheight=0.2, relwidth=0.15)
-
-        self.getDifficultyButton = tk.Button(self.functionFrame, text="OK", font=("Cambria bold", 16), bg="#ebefff",
-                                             command=lambda: self.getDifficulty(self.Answerbox.get()))
-        self.getDifficultyButton.place(relx=0.8, rely=0.7, relheight=0.2, relwidth=0.15)
-
-        self.getPracticeLanguageButton = tk.Button(self.fself.unctionFrame, text="OK", font=("Cambria bold", 16),
-                                                   bg="#ebefff",
-                                                   command=lambda: self.getPracticeLanguage(self.Answerbox.get()))
-        self.getPracticeLanguageButton.place(relx=0.8, rely=0.7, relheight=0.2, relwidth=0.15)
-
-        self.getBaseLanguageButton = tk.Button(self.functionFrame, text="OK", font=("Cambria bold", 16), bg="#ebefff",
-                                               command=lambda: self.getBaseLanguage(self.Answerbox.get()))
-        self.getBaseLanguageButton.place(relx=0.8, rely=0.7, relheight=0.2, relwidth=0.15)
-
+        
 
 window = tk.Tk()
 window.title("Login")
